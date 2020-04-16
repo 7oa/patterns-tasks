@@ -1,15 +1,32 @@
 class EventManager {
-  observers: Set<Observer> = new Set();
-  addObserver(observer: Observer) {
-    this.observers.add(observer);
+  observers: Map<string, Observer[]> = new Map();
+  eventsType: string[];
+
+  constructor() {
+    this.eventsType = [];
+  }
+
+  setTypes(events: string[]) {
+    events.forEach((el) => {
+      this.eventsType.push(el);
+      this.observers.set(el, []);
+    });
+  }
+
+  addObserver(event: string, observer: Observer) {
+    let listeners = this.observers.get(event);
+    if (listeners) listeners.push(observer);
   }
   removeObserver(observer: Observer) {
-    this.observers.delete(observer);
+    //...coming soon...
   }
-  notifyObservers() {
-    this.observers.forEach((el) => {
-      el.update();
-    });
+  notifyObservers(event: string, param: object) {
+    let listeners = this.observers.get(event);
+    if (listeners) {
+      listeners.forEach((el) => {
+        el.update(param);
+      });
+    }
   }
 }
 
@@ -21,22 +38,18 @@ class Configuration extends EventManager {
     super();
     this.serverUrl = "some-server";
     this.trayIcon = "some-icon";
+    this.setTypes(["url", "tray"]);
   }
 
   update(newServerUrl: string, newTrayIcon: string) {
-    this.notifyObservers();
-    this.serverUrl = newServerUrl;
+    if (this.trayIcon !== newTrayIcon) {
+      this.notifyObservers("tray", { trayIcon: newTrayIcon });
+    }
+    if (this.serverUrl !== newServerUrl) {
+      this.notifyObservers("url", { serverUrl: newServerUrl });
+    }
     this.trayIcon = newTrayIcon;
-    // if (this.trayIcon !== newTrayIcon) {
-    //   this.tray.putIcon(newTrayIcon);
-    // }
-    // this.trayIcon = newTrayIcon;
-    // if (this.serverUrl !== newServerUrl) {
-    //   this.cache.cleanUp();
-    // }
-    // this.serverUrl = newServerUrl;
-    // this.registry.setParam("serverUrl", newServerUrl);
-    // this.registry.setParam("trayIcon", newTrayIcon);
+    this.serverUrl = newServerUrl;
   }
 
   getServerUrl() {
@@ -49,7 +62,7 @@ class Configuration extends EventManager {
 }
 
 interface Observer {
-  update(): void;
+  update(params?: object): void;
 }
 
 class DataCache implements Observer {
@@ -72,10 +85,11 @@ class WinRegisty implements Observer {
   getParam() {}
   setParam(param: "trayIcon" | "serverUrl", value: string) {
     this[param] = value;
+    console.log(`WinRegisty changed...`);
   }
-  update() {
-    // this.setParam("serverUrl", newServerUrl);
-    // this.setParam("trayIcon", newTrayIcon);
+  update(params: any) {
+    if (params.serverUrl) this.setParam("serverUrl", params.serverUrl);
+    if (params.trayIcon) this.setParam("trayIcon", params.trayIcon);
   }
 }
 class SystemTray implements Observer {
@@ -85,16 +99,20 @@ class SystemTray implements Observer {
   }
   putIcon(icon: string) {
     this.trayIcon = icon;
+    console.log(`SystemTray changed... new icon ${this.trayIcon}`);
   }
-  update() {
-    //this.putIcon(newTrayIcon);
+  update(params: any) {
+    this.putIcon(params.trayIcon);
   }
 }
 
 const conf = new Configuration();
 const tray = new SystemTray();
-conf.addObserver(tray);
+const reg = new WinRegisty();
+const cache = new DataCache();
+conf.addObserver("tray", tray);
+conf.addObserver("url", cache);
+conf.addObserver("tray", reg);
+conf.addObserver("url", reg);
 conf.update("new-url.com", "new-img.jpeg");
-console.log(tray);
 conf.update("new-url.com", "new-img22.jpeg");
-console.log(tray);
