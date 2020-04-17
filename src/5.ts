@@ -2,9 +2,12 @@ class Report {
   generate() {}
 }
 class TabularReport extends Report {
-  view: Strategy;
-  constructor(view: Strategy) {
+  view: ViewStrategy;
+  constructor(view: ViewStrategy) {
     super();
+    this.view = view;
+  }
+  setView(view: ViewStrategy) {
     this.view = view;
   }
   generate() {
@@ -39,20 +42,20 @@ class D extends TabularReport {
   }
 }
 
-interface Strategy {
+interface ViewStrategy {
   drawTabularData(data: string[]): void;
 }
-class TableReportStrategy implements Strategy {
+class TableReportStrategy implements ViewStrategy {
   drawTabularData(data: string[]) {
     return `Table ${data}`;
   }
 }
-class GraphReportStrategy implements Strategy {
+class GraphReportStrategy implements ViewStrategy {
   drawTabularData(data: string[]) {
     return `Graph ${data}`;
   }
 }
-class DiagramReportStrategy implements Strategy {
+class DiagramReportStrategy implements ViewStrategy {
   drawTabularData(data: string[]) {
     return `Diagram ${data}`;
   }

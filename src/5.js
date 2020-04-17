@@ -7,6 +7,9 @@ class TabularReport extends Report {
         super();
         this.view = view;
     }
+    setView(view) {
+        this.view = view;
+    }
     generate() {
         const data = this.loadTabularData();
         return this.drawTabularData(data);
