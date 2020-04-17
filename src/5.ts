@@ -2,8 +2,8 @@ class Report {
   generate() {}
 }
 class TabularReport extends Report {
-  view: ReportView;
-  constructor(view: ReportView) {
+  view: Strategy;
+  constructor(view: Strategy) {
     super();
     this.view = view;
   }
@@ -39,29 +39,29 @@ class D extends TabularReport {
   }
 }
 
-class ReportView {
-  drawTabularData(data: string[]) {}
+interface Strategy {
+  drawTabularData(data: string[]): void;
 }
-class TableReport extends ReportView {
+class TableReportStrategy implements Strategy {
   drawTabularData(data: string[]) {
     return `Table ${data}`;
   }
 }
-class GraphReport extends ReportView {
+class GraphReportStrategy implements Strategy {
   drawTabularData(data: string[]) {
     return `Graph ${data}`;
   }
 }
-class DiagramReport extends ReportView {
+class DiagramReportStrategy implements Strategy {
   drawTabularData(data: string[]) {
     return `Diagram ${data}`;
   }
 }
 
-const a = new A(new GraphReport());
-const b = new B(new TableReport());
-const c = new C(new GraphReport());
-const d = new D(new DiagramReport());
+const a = new A(new GraphReportStrategy());
+const b = new B(new TableReportStrategy());
+const c = new C(new GraphReportStrategy());
+const d = new D(new DiagramReportStrategy());
 console.log(a.generate());
 console.log(b.generate());
 console.log(c.generate());

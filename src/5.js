@@ -38,28 +38,25 @@ class D extends TabularReport {
         return ["d1", "d2"];
     }
 }
-class ReportView {
-    drawTabularData(data) { }
-}
-class TableReport extends ReportView {
+class TableReportStrategy {
     drawTabularData(data) {
         return `Table ${data}`;
     }
 }
-class GraphReport extends ReportView {
+class GraphReportStrategy {
     drawTabularData(data) {
         return `Graph ${data}`;
     }
 }
-class DiagramReport extends ReportView {
+class DiagramReportStrategy {
     drawTabularData(data) {
         return `Diagram ${data}`;
     }
 }
-const a = new A(new GraphReport());
-const b = new B(new TableReport());
-const c = new C(new GraphReport());
-const d = new D(new DiagramReport());
+const a = new A(new GraphReportStrategy());
+const b = new B(new TableReportStrategy());
+const c = new C(new GraphReportStrategy());
+const d = new D(new DiagramReportStrategy());
 console.log(a.generate());
 console.log(b.generate());
 console.log(c.generate());
