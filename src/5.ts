@@ -3,40 +3,43 @@ class Report {
 }
 class TabularReport extends Report {
   view: ViewStrategy;
-  constructor(view: ViewStrategy) {
+  perfomance: PerfomanceStrategy;
+  constructor(perfomance: PerfomanceStrategy, view: ViewStrategy) {
     super();
     this.view = view;
+    this.perfomance = perfomance;
   }
   setView(view: ViewStrategy) {
     this.view = view;
   }
+  setPerfomance(perfomance: PerfomanceStrategy) {
+    this.perfomance = perfomance;
+  }
   generate() {
-    const data = this.loadTabularData();
-    return this.drawTabularData(data);
-  }
-  loadTabularData() {
-    return ["..."];
-  }
-  drawTabularData(data: string[]) {
+    const data = this.perfomance.loadTabularData();
     return this.view.drawTabularData(data);
   }
 }
-class A extends TabularReport {
+
+interface PerfomanceStrategy {
+  loadTabularData(): string[];
+}
+class A implements PerfomanceStrategy {
   loadTabularData() {
     return ["a1", "a2"];
   }
 }
-class B extends TabularReport {
+class B implements PerfomanceStrategy {
   loadTabularData() {
     return ["b1", "b2"];
   }
 }
-class C extends TabularReport {
+class C implements PerfomanceStrategy {
   loadTabularData() {
     return ["c1", "c2"];
   }
 }
-class D extends TabularReport {
+class D implements PerfomanceStrategy {
   loadTabularData() {
     return ["d1", "d2"];
   }
@@ -61,11 +64,16 @@ class DiagramReportStrategy implements ViewStrategy {
   }
 }
 
-const a = new A(new GraphReportStrategy());
-const b = new B(new TableReportStrategy());
-const c = new C(new GraphReportStrategy());
-const d = new D(new DiagramReportStrategy());
+const a = new TabularReport(new A(), new GraphReportStrategy());
+const b = new TabularReport(new B(), new TableReportStrategy());
+const c = new TabularReport(new C(), new GraphReportStrategy());
+const d = new TabularReport(new D(), new DiagramReportStrategy());
+
 console.log(a.generate());
 console.log(b.generate());
 console.log(c.generate());
+console.log(d.generate());
+d.setPerfomance(new A());
+console.log(d.generate());
+d.setView(new GraphReportStrategy());
 console.log(d.generate());

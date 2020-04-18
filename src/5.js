@@ -3,40 +3,38 @@ class Report {
     generate() { }
 }
 class TabularReport extends Report {
-    constructor(view) {
+    constructor(perfomance, view) {
         super();
         this.view = view;
+        this.perfomance = perfomance;
     }
     setView(view) {
         this.view = view;
     }
+    setPerfomance(perfomance) {
+        this.perfomance = perfomance;
+    }
     generate() {
-        const data = this.loadTabularData();
-        return this.drawTabularData(data);
-    }
-    loadTabularData() {
-        return ["..."];
-    }
-    drawTabularData(data) {
+        const data = this.perfomance.loadTabularData();
         return this.view.drawTabularData(data);
     }
 }
-class A extends TabularReport {
+class A {
     loadTabularData() {
         return ["a1", "a2"];
     }
 }
-class B extends TabularReport {
+class B {
     loadTabularData() {
         return ["b1", "b2"];
     }
 }
-class C extends TabularReport {
+class C {
     loadTabularData() {
         return ["c1", "c2"];
     }
 }
-class D extends TabularReport {
+class D {
     loadTabularData() {
         return ["d1", "d2"];
     }
@@ -56,11 +54,15 @@ class DiagramReportStrategy {
         return `Diagram ${data}`;
     }
 }
-const a = new A(new GraphReportStrategy());
-const b = new B(new TableReportStrategy());
-const c = new C(new GraphReportStrategy());
-const d = new D(new DiagramReportStrategy());
+const a = new TabularReport(new A(), new GraphReportStrategy());
+const b = new TabularReport(new B(), new TableReportStrategy());
+const c = new TabularReport(new C(), new GraphReportStrategy());
+const d = new TabularReport(new D(), new DiagramReportStrategy());
 console.log(a.generate());
 console.log(b.generate());
 console.log(c.generate());
+console.log(d.generate());
+d.setPerfomance(new A());
+console.log(d.generate());
+d.setView(new GraphReportStrategy());
 console.log(d.generate());
