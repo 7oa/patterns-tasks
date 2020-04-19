@@ -117,11 +117,11 @@ class SystemTray {
 const reg = new WinRegisty();
 const chache = new DataCache();
 const tray = new SystemTray();
-const url = new UrlChangeListener(reg, chache);
-const icon = new IconChangeListener(reg, tray);
-const conf = new Configuration();
-conf.events.addListener("tray", icon);
-conf.events.addListener("url", url);
-conf.update("new-url.com", "new-img.jpeg");
+const urlListener = new UrlChangeListener(reg, chache);
+const iconListener = new IconChangeListener(reg, tray);
+const config = new Configuration();
+config.events.addListener("tray", iconListener);
+config.events.addListener("url", urlListener);
+config.update("new-url.com", "new-img.jpeg");
 console.log("..............");
-conf.update("new-url.com", "new-img22.jpeg");
+config.update("new-url.com", "new-img22.jpeg");
