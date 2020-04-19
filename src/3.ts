@@ -1,16 +1,16 @@
 class EventManager {
-  listeners: Map<string, Listener[]> = new Map();
+  events: Map<string, Listener[]> = new Map();
 
   addListener(event: string, listener: Listener) {
-    let listeners = this.listeners.get(event);
+    let listeners = this.events.get(event);
     if (listeners) listeners.push(listener);
-    else this.listeners.set(event, [listener]);
+    else this.events.set(event, [listener]);
   }
   removeListener(listener: Listener) {
     //...coming soon...
   }
   notifyListeners(event: string, param: string) {
-    let listeners = this.listeners.get(event);
+    let listeners = this.events.get(event);
     if (listeners) {
       listeners.forEach((el) => {
         el.update(param);

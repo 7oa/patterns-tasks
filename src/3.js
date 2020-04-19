@@ -1,20 +1,20 @@
 "use strict";
 class EventManager {
     constructor() {
-        this.listeners = new Map();
+        this.events = new Map();
     }
     addListener(event, listener) {
-        let listeners = this.listeners.get(event);
+        let listeners = this.events.get(event);
         if (listeners)
             listeners.push(listener);
         else
-            this.listeners.set(event, [listener]);
+            this.events.set(event, [listener]);
     }
     removeListener(listener) {
         //...coming soon...
     }
     notifyListeners(event, param) {
-        let listeners = this.listeners.get(event);
+        let listeners = this.events.get(event);
         if (listeners) {
             listeners.forEach((el) => {
                 el.update(param);
