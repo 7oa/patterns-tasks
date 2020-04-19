@@ -1,16 +1,16 @@
 class EventManager {
-  observers: Map<string, Listener[]> = new Map();
+  listeners: Map<string, Listener[]> = new Map();
 
-  addObserver(event: string, observer: Listener) {
-    let listeners = this.observers.get(event);
-    if (listeners) listeners.push(observer);
-    else this.observers.set(event, [observer]);
+  addListener(event: string, listener: Listener) {
+    let listeners = this.listeners.get(event);
+    if (listeners) listeners.push(listener);
+    else this.listeners.set(event, [listener]);
   }
-  removeObserver(observer: Listener) {
+  removeListener(listener: Listener) {
     //...coming soon...
   }
-  notifyObservers(event: string, param: string) {
-    let listeners = this.observers.get(event);
+  notifyListeners(event: string, param: string) {
+    let listeners = this.listeners.get(event);
     if (listeners) {
       listeners.forEach((el) => {
         el.update(param);
@@ -32,10 +32,10 @@ class Configuration {
 
   update(newServerUrl: string, newTrayIcon: string) {
     if (this.trayIcon !== newTrayIcon) {
-      this.events.notifyObservers("tray", newTrayIcon);
+      this.events.notifyListeners("tray", newTrayIcon);
     }
     if (this.serverUrl !== newServerUrl) {
-      this.events.notifyObservers("url", newServerUrl);
+      this.events.notifyListeners("url", newServerUrl);
     }
     this.trayIcon = newTrayIcon;
     this.serverUrl = newServerUrl;
@@ -120,8 +120,8 @@ const tray = new SystemTray();
 const url = new UrlChangeListener(reg, chache);
 const icon = new IconChangeListener(reg, tray);
 const conf = new Configuration();
-conf.events.addObserver("tray", icon);
-conf.events.addObserver("url", url);
+conf.events.addListener("tray", icon);
+conf.events.addListener("url", url);
 conf.update("new-url.com", "new-img.jpeg");
 console.log("..............");
 conf.update("new-url.com", "new-img22.jpeg");
